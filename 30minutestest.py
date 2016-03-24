@@ -1,34 +1,39 @@
 from xml.dom.minidom import parse
 from operator import itemgetter
-import sys
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as pyplot
 
-def getHrsFromGpx(gpx_file):
+import datetime
+import sys
+
+# assume sampling time is 1s
+measured_window = 60 * 20
+
+# set off to disable plotting
+plot_hr = True
+
+
+def get_hr_measurements(gpx_file):
     gpx = parse(gpx_file)
     return [ int(hr.childNodes[0].wholeText) for hr in gpx.getElementsByTagName('gpxtpx:hr') ]
 
+def calculate_moving_sums(measures, windowlen):
+    limit = len(measures) - windowlen
+    return [ (time_point, sum(measures[time_point:time_point+windowlen]))
+             for time_point in range(0,limit) ]
+
+
 gpx_file = sys.argv[1]
-hrs = getHrsFromGpx(gpx_file)
+sums = calculate_moving_sums(get_hr_measurements(gpx_file), measured_window)
 
-# assume sampling time is 1s
-num_of_hr = 60 * 20
-
-limit = len(hrs) - num_of_hr
-
-print("Checking for {} in {}\n".format(num_of_hr, limit))
-
-sums = [ (x, sum(hrs[x:x+num_of_hr])) for x in range(0,limit) ]
-averages = [ (x, round(s / num_of_hr)) for x, s in sums ]
+averages = [ (x, round(s / measured_window)) for x, s in sums ]
 
 # your lactate threshold is average of alst 20 minutes in 30 minutes of tempo run
-lactate_thr = max(averages, key=itemgetter(1))
+_,lactate_thr = max(averages, key=itemgetter(1))
 
-print("Your lactate threshold is {} measured between {} and {} second.\n"
-      .format(lactate_thr[1],
-              lactate_thr[0],
-              lactate_thr[0]+num_of_hr))
+print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
 
-plt.plot( [a for _,a in averages] )
-plt.ylabel('HR bpm')
-plt.xlabel('second')
-plt.show()
+if(plot_hr):
+    pyplot.plot( [a for _,a in averages] )
+    pyplot.ylabel('HR bpm')
+    pyplot.xlabel('second')
+    pyplot.show()
