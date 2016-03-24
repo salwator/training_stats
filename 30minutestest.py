@@ -28,11 +28,14 @@ sums = calculate_moving_sums(get_hr_measurements(gpx_file), measured_window)
 averages = [ (x, round(s / measured_window)) for x, s in sums ]
 
 # your lactate threshold is average of alst 20 minutes in 30 minutes of tempo run
-_,lactate_thr = max(averages, key=itemgetter(1))
+time_stamp,lactate_thr = max(averages, key=itemgetter(1))
 
 print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
 
 if(plot_hr):
+    average_hr = [ lactate_thr for _ in range(measured_window) ]
+    time_period = range(time_stamp, time_stamp + measured_window)
+    pyplot.plot(time_period, average_hr)
     pyplot.plot( [a for _,a in averages] )
     pyplot.ylabel('HR bpm')
     pyplot.xlabel('second')
