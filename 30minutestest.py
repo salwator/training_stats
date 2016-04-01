@@ -78,35 +78,23 @@ def main():
     
     if(plot_hr):
         pyplot.figure(1)
+   
+        # plot lactate threshold on measured time period
         pyplot.subplot(311)
-    
         average_hr = [lactate_thr for _ in range(measured_window)]
         time_period = range(time_stamp, time_stamp + measured_window)
         pyplot.plot(time_period, average_hr)
         pyplot.plot([a for (_, a) in averages])
         pyplot.ylabel('HR bpm')
         pyplot.xlabel('second')
-    
+   
+        # plot hr
         pyplot.subplot(312)
-    
-        first_time_stamp = decode_iso_time(time_and_hr[0][0])
-    
-        hrs_z = []
-        time_stamps = []
-    
-        for date_and_hr in time_and_hr:
-            d1 = decode_iso_time(date_and_hr[0])
-            diff = d1 - first_time_stamp;
-            time_stamps.append(diff.total_seconds());
-            hrs_z.append(date_and_hr[1])
-    
-        pyplot.plot(time_stamps, hrs_z)
-    
+        pyplot.plot(*zip(*hrs)) 
+
+        #plot interpolated(/smoothed) hr
         pyplot.subplot(313)
-    
-        interpolate_hrs = list(zip(*interpolate(hrs)))
-       
-        pyplot.plot(interpolate_hrs[0], interpolate_hrs[1])
+        pyplot.plot(*zip(*interpolate(hrs)))
     
         pyplot.show()
 
