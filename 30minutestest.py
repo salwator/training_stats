@@ -24,19 +24,20 @@ def get_time(trkpt):
         return time_children[0].childNodes[0].toxml()
 
 def get_hr(trkpt):
-    hr_children =trkpt.getElementsByTagName('gpxtpx:hr')
+    hr_children = trkpt.getElementsByTagName('gpxtpx:hr')
     if hr_children:
         return int(hr_children[0].childNodes[0].wholeText)
 
+def decode_iso_time(timestr):
+    return datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%SZ')
+
 def convert_time(time, start):
-    t = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
-    dt = t - start
+    dt = decode_iso_time(time) - start
     return dt.total_seconds()
 
 def get_hr_measurements(gpx_file):
-    points = get_trkpts(gpx_file) 
-    data = [ (get_time(p), get_hr(p)) for p in points ]
-    start_time = datetime.strptime(data[0][0], '%Y-%m-%dT%H:%M:%SZ')
+    data = [ (get_time(p), get_hr(p)) for p in get_trkpts(gpx_file) ]
+    start_time = decode_iso_time(data[0][0])
     return [ (convert_time(t, start_time), hr) for (t, hr) in data if hr ]
 
 def interpolate(points):
@@ -80,13 +81,13 @@ if(plot_hr):
 
     pyplot.subplot(312)
 
-    first_time_stamp = datetime.strptime(time_and_hr[0][0], '%Y-%m-%dT%H:%M:%SZ')
+    first_time_stamp = decode_iso_time(time_and_hr[0][0])
 
     hrs_z = []
     time_stamps = []
 
     for date_and_hr in time_and_hr:
-        d1 = datetime.strptime(date_and_hr[0], '%Y-%m-%dT%H:%M:%SZ')
+        d1 = decode_iso_time(date_and_hr[0])
         diff = d1 - first_time_stamp;
         time_stamps.append(diff.total_seconds());
         hrs_z.append(date_and_hr[1])
