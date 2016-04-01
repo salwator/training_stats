@@ -44,23 +44,26 @@ def interpolate(points):
     new_hrs = spl(time_stamps)
     return list(zip(time_stamps, new_hrs))
 
-def calculate_moving_sums(measures, windowlen):
-    """ Naive implementation, to be changed """
-    limit = len(measures) - windowlen
-    hrs =  [ hr for _, hr in measures ]
-    return [(time_point, sum(hrs[time_point:time_point+windowlen]))
-            for time_point in range(0, limit)]
+def calculate_moving_sums(points, window):
+    """ Calculates hr moving sums of the window len """
+    time, hrs = zip(*points)
+    moving_sum = sum(hrs[0:window])
+    sums = [(time[0], moving_sum)]
+    for i,t in enumerate(time[1:-1*window]):
+        moving_sum += hrs[i+window]-hrs[i]
+        sums.append((t, moving_sum))
+    return sums 
 
 def main():
     measured_window = 60 * 20 # measured period in seconds
-    plot_hr = True # turn off to disable data plotting
+    plot_hr = False # turn off to disable data plotting
 
     gpx_file = sys.argv[1]
     print("Loading gpx: {}".format(gpx_file))
     
     hrs = get_hr_measurements(gpx_file)
-    sums = calculate_moving_sums(interpolate(hrs) , measured_window)
-    
+    sums = calculate_moving_sums(interpolate(hrs), measured_window) 
+
     averages = [(x, round(s / measured_window)) for x, s in sums]
     
     # your lactate threshold is average of last 20 in 30 minutes of tempo run
