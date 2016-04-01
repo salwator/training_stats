@@ -43,9 +43,9 @@ def get_hr_measurements(gpx_file):
 
 def interpolate(points):
     """ Interpolate given t,y range into 1s spaced sequence. """
-    split = list(zip(*points))
-    spl = UnivariateSpline(split[0],split[1])
-    time_stamps = list(range(int(split[0][-1])))
+    time, hr = zip(*points)
+    spl = UnivariateSpline(time, hr)
+    time_stamps = list(range(int(time[-1])))
     new_hrs = spl(time_stamps)
     return list(zip(time_stamps, new_hrs))
 
