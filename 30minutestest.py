@@ -40,6 +40,7 @@ def interpolate(points):
     """ Interpolate given t,y range into 1s spaced sequence. """
     time, hr = zip(*points)
     spl = UnivariateSpline(time, hr)
+    spl.set_smoothing_factor(0.5)
     time_stamps = range(int(time[-1]))
     new_hrs = spl(time_stamps)
     return list(zip(time_stamps, new_hrs))
