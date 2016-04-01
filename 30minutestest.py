@@ -40,7 +40,7 @@ def get_hr_measurements(gpx_file):
     return [ (convert_time(t, start_time), hr) for (t, hr) in data if hr ]
 
 def interpolate(points):
-    split = zip(*points)
+    split = list(zip(*points))
     spl = UnivariateSpline(split[0],split[1])
     time_stamps = list(range(int(split[0][-1])))
     new_hrs = spl(time_stamps)
@@ -95,7 +95,7 @@ if(plot_hr):
 
     pyplot.subplot(313)
 
-    interpolate_hrs = zip(*interpolate(hrs))
+    interpolate_hrs = list(zip(*interpolate(hrs)))
    
     pyplot.plot(interpolate_hrs[0], interpolate_hrs[1])
 
