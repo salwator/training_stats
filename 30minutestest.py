@@ -66,7 +66,7 @@ def main():
     time_stamp, max_sum = max(calculate_moving_sums(hrs, test_period), key=itemgetter(1))
     
     # your lactate threshold is average of last 20 in 30 minutes of tempo run
-    measured_hrs = (hr for _,hr in hrs[time_stamp + (test_period - measured_period):time_stamp+test_period])
+    _, measured_hrs = zip(*hrs[time_stamp + (test_period - measured_period):time_stamp+test_period])
     lactate_thr = int(round(sum(measured_hrs) / measured_period))
     
     
