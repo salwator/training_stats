@@ -8,15 +8,9 @@ from datetime import timedelta, datetime
 from scipy.interpolate import UnivariateSpline
 import sys
 
-# assume sampling time is 1s
-measured_window = 60 * 20
 
-# set off to disable plotting
-plot_hr = True
 
-def get_trkpts(gpx_file):
-    gpx = parse(gpx_file)
-    return gpx.childNodes[0].getElementsByTagName("trkpt")
+
 
 def get_time(trkpt):
     time_children = trkpt.getElementsByTagName("time") 
@@ -32,15 +26,23 @@ def decode_iso_time(timestr):
     return datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%SZ')
 
 def convert_time(time, start):
+    """ Calculates elapsed timed from start in second """
     dt = decode_iso_time(time) - start
     return dt.total_seconds()
 
+def get_trkpts(gpx_file):
+    """ Retrieves all trkpt elements from gpx_file. Returns list of DOM elements."""
+    gpx = parse(gpx_file)
+    return gpx.childNodes[0].getElementsByTagName("trkpt")
+
 def get_hr_measurements(gpx_file):
+    """ Generates a list of (time, hr) from gpx file. Skips missing measuruments. """
     data = [ (get_time(p), get_hr(p)) for p in get_trkpts(gpx_file) ]
     start_time = decode_iso_time(data[0][0])
     return [ (convert_time(t, start_time), hr) for (t, hr) in data if hr ]
 
 def interpolate(points):
+    """ Interpolate given t,y range into 1s spaced sequence. """
     split = list(zip(*points))
     spl = UnivariateSpline(split[0],split[1])
     time_stamps = list(range(int(split[0][-1])))
@@ -48,56 +50,69 @@ def interpolate(points):
     return list(zip(time_stamps, new_hrs))
 
 def calculate_moving_sums(measures, windowlen):
+    """ Naive implementation, to be changed """
     limit = len(measures) - windowlen
     hrs =  [ hr for _, hr in measures ]
     return [(time_point, sum(hrs[time_point:time_point+windowlen]))
             for time_point in range(0, limit)]
 
-gpx_file = sys.argv[1]
-print("Loading gpx: {}".format(gpx_file))
 
-hrs = get_hr_measurements(gpx_file)
-sums = calculate_moving_sums(interpolate(hrs) , measured_window)
+def main():
+    measured_window = 60 * 20 # measured period in seconds
+    plot_hr = True # turn off to disable data plotting
 
-averages = [(x, round(s / measured_window)) for x, s in sums]
+    gpx_file = sys.argv[1]
+    print("Loading gpx: {}".format(gpx_file))
+    
+    hrs = get_hr_measurements(gpx_file)
+    sums = calculate_moving_sums(interpolate(hrs) , measured_window)
+    
+    averages = [(x, round(s / measured_window)) for x, s in sums]
+    
+    # your lactate threshold is average of last 20 in 30 minutes of tempo run
+    time_stamp, lactate_thr = max(averages, key=itemgetter(1))
+    
+    print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
+    
+    time_and_hr = [ (get_time(trkpt), get_hr(trkpt)) for trkpt in get_trkpts(gpx_file) ]
+    
+    if(plot_hr):
+        pyplot.figure(1)
+        pyplot.subplot(311)
+    
+        average_hr = [lactate_thr for _ in range(measured_window)]
+        time_period = range(time_stamp, time_stamp + measured_window)
+        pyplot.plot(time_period, average_hr)
+        pyplot.plot([a for (_, a) in averages])
+        pyplot.ylabel('HR bpm')
+        pyplot.xlabel('second')
+    
+        pyplot.subplot(312)
+    
+        first_time_stamp = decode_iso_time(time_and_hr[0][0])
+    
+        hrs_z = []
+        time_stamps = []
+    
+        for date_and_hr in time_and_hr:
+            d1 = decode_iso_time(date_and_hr[0])
+            diff = d1 - first_time_stamp;
+            time_stamps.append(diff.total_seconds());
+            hrs_z.append(date_and_hr[1])
+    
+        pyplot.plot(time_stamps, hrs_z)
+    
+        pyplot.subplot(313)
+    
+        interpolate_hrs = list(zip(*interpolate(hrs)))
+       
+        pyplot.plot(interpolate_hrs[0], interpolate_hrs[1])
+    
+        pyplot.show()
 
-# your lactate threshold is average of last 20 in 30 minutes of tempo run
-time_stamp, lactate_thr = max(averages, key=itemgetter(1))
 
-print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
+if __name__ == "__main__":
+    main()
 
-time_and_hr = [ (get_time(trkpt), get_hr(trkpt)) for trkpt in get_trkpts(gpx_file) ]
 
-if(plot_hr):
-    pyplot.figure(1)
-    pyplot.subplot(311)
 
-    average_hr = [lactate_thr for _ in range(measured_window)]
-    time_period = range(time_stamp, time_stamp + measured_window)
-    pyplot.plot(time_period, average_hr)
-    pyplot.plot([a for (_, a) in averages])
-    pyplot.ylabel('HR bpm')
-    pyplot.xlabel('second')
-
-    pyplot.subplot(312)
-
-    first_time_stamp = decode_iso_time(time_and_hr[0][0])
-
-    hrs_z = []
-    time_stamps = []
-
-    for date_and_hr in time_and_hr:
-        d1 = decode_iso_time(date_and_hr[0])
-        diff = d1 - first_time_stamp;
-        time_stamps.append(diff.total_seconds());
-        hrs_z.append(date_and_hr[1])
-
-    pyplot.plot(time_stamps, hrs_z)
-
-    pyplot.subplot(313)
-
-    interpolate_hrs = list(zip(*interpolate(hrs)))
-   
-    pyplot.plot(interpolate_hrs[0], interpolate_hrs[1])
-
-    pyplot.show()
