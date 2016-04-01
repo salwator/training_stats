@@ -74,8 +74,6 @@ def main():
     
     print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
     
-    time_and_hr = [ (get_time(trkpt), get_hr(trkpt)) for trkpt in get_trkpts(gpx_file) ]
-    
     if(plot_hr):
         pyplot.figure(1)
    
