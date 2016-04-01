@@ -23,7 +23,7 @@ def decode_iso_time(timestr):
 def convert_time(time, start):
     """ Calculates elapsed timed from start in second """
     dt = decode_iso_time(time) - start
-    return dt.total_seconds()
+    return int(dt.total_seconds())
 
 def get_trkpts(gpx_file):
     """ Retrieves all trkpt elements from gpx_file. Returns list of DOM elements."""
@@ -55,33 +55,25 @@ def calculate_moving_sums(points, window):
     return sums 
 
 def main():
-    measured_window = 60 * 20 # measured period in seconds
-    plot_hr = True # turn off to disable data plotting
+    test_period = 60 * 30 # test time 
+    measured_period = 60 * 20 # measured period in seconds 
+    plot_hr = False # turn off to disable data plotting
 
     gpx_file = sys.argv[1]
-    print("Loading gpx: {}".format(gpx_file))
+    print("Loading gpx: {}\n".format(gpx_file))
     
-    hrs = get_hr_measurements(gpx_file)
-    sums = calculate_moving_sums(interpolate(hrs), measured_window) 
-    time_stamp, max_sum = max(sums, key=itemgetter(1))
+    hrs = interpolate(get_hr_measurements(gpx_file))
+    time_stamp, max_sum = max(calculate_moving_sums(hrs, test_period), key=itemgetter(1))
     
     # your lactate threshold is average of last 20 in 30 minutes of tempo run
-    lactate_thr = round(max_sum / measured_window)
+    measured_hrs = (hr for _,hr in hrs[time_stamp + (test_period - measured_period):time_stamp+test_period])
+    lactate_thr = int(round(sum(measured_hrs) / measured_period))
     
     
     print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
     
     if(plot_hr):
-        pyplot.figure(1)
-   
-        # plot hr
-        pyplot.subplot(211)
-        pyplot.plot(*zip(*hrs)) 
-
-        #plot interpolated(/smoothed) hr
-        pyplot.subplot(212)
-        pyplot.plot(*zip(*interpolate(hrs)))
-    
+        pyplot.plot(*zip(*hrs))
         pyplot.show()
 
 if __name__ == "__main__":
