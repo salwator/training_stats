@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 
-
 from xml.dom.minidom import parse
 from operator import itemgetter
 import matplotlib.pyplot as pyplot
 from datetime import timedelta, datetime
 from scipy.interpolate import UnivariateSpline
 import sys
-
-
-
-
 
 def get_time(trkpt):
     time_children = trkpt.getElementsByTagName("time") 
@@ -56,7 +51,6 @@ def calculate_moving_sums(measures, windowlen):
     return [(time_point, sum(hrs[time_point:time_point+windowlen]))
             for time_point in range(0, limit)]
 
-
 def main():
     measured_window = 60 * 20 # measured period in seconds
     plot_hr = True # turn off to disable data plotting
@@ -96,9 +90,6 @@ def main():
     
         pyplot.show()
 
-
 if __name__ == "__main__":
     main()
-
-
 
