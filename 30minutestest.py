@@ -56,39 +56,30 @@ def calculate_moving_sums(points, window):
 
 def main():
     measured_window = 60 * 20 # measured period in seconds
-    plot_hr = False # turn off to disable data plotting
+    plot_hr = True # turn off to disable data plotting
 
     gpx_file = sys.argv[1]
     print("Loading gpx: {}".format(gpx_file))
     
     hrs = get_hr_measurements(gpx_file)
     sums = calculate_moving_sums(interpolate(hrs), measured_window) 
-
-    averages = [(x, round(s / measured_window)) for x, s in sums]
+    time_stamp, max_sum = max(sums, key=itemgetter(1))
     
     # your lactate threshold is average of last 20 in 30 minutes of tempo run
-    time_stamp, lactate_thr = max(averages, key=itemgetter(1))
+    lactate_thr = round(max_sum / measured_window)
+    
     
     print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
     
     if(plot_hr):
         pyplot.figure(1)
    
-        # plot lactate threshold on measured time period
-        pyplot.subplot(311)
-        average_hr = [lactate_thr for _ in range(measured_window)]
-        time_period = range(time_stamp, time_stamp + measured_window)
-        pyplot.plot(time_period, average_hr)
-        pyplot.plot([a for (_, a) in averages])
-        pyplot.ylabel('HR bpm')
-        pyplot.xlabel('second')
-   
         # plot hr
-        pyplot.subplot(312)
+        pyplot.subplot(211)
         pyplot.plot(*zip(*hrs)) 
 
         #plot interpolated(/smoothed) hr
-        pyplot.subplot(313)
+        pyplot.subplot(212)
         pyplot.plot(*zip(*interpolate(hrs)))
     
         pyplot.show()
