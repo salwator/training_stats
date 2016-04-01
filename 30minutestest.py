@@ -57,7 +57,7 @@ def calculate_moving_sums(points, window):
 def main():
     test_period = 60 * 30 # test time 
     measured_period = 60 * 20 # measured period in seconds 
-    plot_hr = False # turn off to disable data plotting
+    plot_hr = True # turn off to disable data plotting
 
     gpx_file = sys.argv[1]
     print("Loading gpx: {}\n".format(gpx_file))
@@ -66,14 +66,14 @@ def main():
     time_stamp, max_sum = max(calculate_moving_sums(hrs, test_period), key=itemgetter(1))
     
     # your lactate threshold is average of last 20 in 30 minutes of tempo run
-    _, measured_hrs = zip(*hrs[time_stamp + (test_period - measured_period):time_stamp+test_period])
+    measured_time, measured_hrs = list(zip(*hrs[time_stamp + (test_period - measured_period):time_stamp+test_period]))
     lactate_thr = int(round(sum(measured_hrs) / measured_period))
-    
     
     print("Your lactate threshold is {} bpm.\n".format(lactate_thr))
     
     if(plot_hr):
-        pyplot.plot(*zip(*hrs))
+        pyplot.plot(*zip(*hrs), 'b')
+        pyplot.plot(measured_time, measured_hrs, 'r')
         pyplot.show()
 
 if __name__ == "__main__":
