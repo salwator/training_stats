@@ -77,8 +77,10 @@ def main():
                               key=itemgetter(1))
 
     # your lactate threshold is average of last 20 in 30 minutes of tempo run
-    measured_time, measured_hrs = list(zip(*hrs[time_stamp + (test_period - measured_period):time_stamp+test_period]))
-    lactate_thr = int(round(sum(measured_hrs) / measured_period))
+    start_measure = time_stamp + (test_period - measured_period)
+    stop_measure = start_measure + measured_period
+    measured_time, measured_hrs = zip(*hrs[start_measure:stop_measure])
+    lactate_thr = round(sum(measured_hrs) / measured_period)
 
     print("Your lactate threshold is {} bpm.".format(lactate_thr))
 
