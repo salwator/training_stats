@@ -7,7 +7,6 @@ from datetime import datetime
 from scipy.interpolate import UnivariateSpline
 import sys
 
-
 def get_time(trkpt):
     time_children = trkpt.getElementsByTagName("time")
     if time_children:
