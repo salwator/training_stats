@@ -8,4 +8,4 @@ devbuild: venv
 	venv/bin/python setup.py install
 
 test: devbuild
-	./nosetests
+	nosetests
