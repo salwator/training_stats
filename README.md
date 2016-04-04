@@ -1,11 +1,11 @@
-# Training Statistics ![travis](https://travis-ci.org/salwator/training_stats.svg?branch=master)
+# Training Statistics   ![travis](https://travis-ci.org/salwator/training_stats.svg?branch=master)
 
 My aim in this project is to develop set of useful scripts for analyzing data collected by modern running/cycling watches.
 
 ## Installation
 
 You will need Python in version 3.4 or newer.
-Run `maker` to install dependencies in local virtualenv.
+Run `make` to install dependencies in local virtualenv.
 
 If you want to install dependencies system-wide you can use `sudo pip install -r requirements.txt`.
 
