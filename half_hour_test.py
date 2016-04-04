@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
+import sys
 from xml.dom.minidom import parse
 from operator import itemgetter
-import matplotlib.pyplot as pyplot
 from datetime import datetime
-from scipy.interpolate import UnivariateSpline
-import sys
+
+import matplotlib.pyplot as pyplot
+import numpy as np
 
 def get_time(trkpt):
     time_children = trkpt.getElementsByTagName("time")
@@ -43,13 +44,10 @@ def get_hr_measurements(gpx_file):
 
 
 def interpolate(points):
-    """ Interpolate given t,y range into 1s spaced sequence. """
     time, hr = zip(*points)
-    spl = UnivariateSpline(time, hr)
-    spl.set_smoothing_factor(0.5)
-    time_stamps = range(int(time[-1]))
-    new_hrs = spl(time_stamps)
-    return list(zip(time_stamps, new_hrs))
+    end_time = time[-1]
+    new_time = range(int(time[-1]))
+    return list(zip(new_time, np.interp(new_time, time, hr)))
 
 
 def calculate_moving_sums(points, window):
