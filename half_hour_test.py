@@ -46,7 +46,7 @@ def get_hr_measurements(gpx_file):
 def interpolate(points):
     time, hr = zip(*points)
     end_time = time[-1]
-    new_time = range(int(time[-1]))
+    new_time = np.arange(int(time[-1]))
     return list(zip(new_time, np.interp(new_time, time, hr)))
 
 
