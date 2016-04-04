@@ -4,20 +4,23 @@ import sys
 from xml.dom.minidom import parse
 from operator import itemgetter
 from datetime import datetime
-
+import xml.etree.cElementTree as ET
 import matplotlib.pyplot as pyplot
 import numpy as np
+import re
 
-def get_time(trkpt):
-    time_children = trkpt.getElementsByTagName("time")
-    if time_children:
-        return time_children[0].childNodes[0].toxml()
+def get_time(trkpt, namespace):
+    time_children = trkpt.find("./{0}time".format(namespace))
+    if time_children is not None:
+        return time_children.text
 
 
-def get_hr(trkpt):
-    hr_children = trkpt.getElementsByTagName('gpxtpx:hr')
-    if hr_children:
-        return int(hr_children[0].childNodes[0].wholeText)
+def get_hr(trkpt, namespace):
+    extension_children = trkpt.find('./{0}extensions/./'.format(namespace))
+    ext_ns = re.match('\{.*\}', extension_children.tag).group(0)
+    hr_child = extension_children.find('./{0}hr'.format(ext_ns))
+    if hr_child is not None:
+        return int(hr_child.text)
 
 
 def decode_iso_time(timestr):
@@ -31,14 +34,16 @@ def convert_time(time, start):
 
 
 def get_trkpts(gpx_file):
-    """ Retrieves all trkpt from gpx_file. Returns list of DOM elements."""
-    gpx = parse(gpx_file)
-    return gpx.childNodes[0].getElementsByTagName("trkpt")
+    tree = ET.parse(gpx_file)
+    root = tree.getroot()
+    ns = re.match('\{.*\}', root.tag).group(0)
+    return (ns, root.findall('./{0}trk/{0}trkseg/{0}trkpt'.format(ns)))
 
 
 def get_hr_measurements(gpx_file):
     """ Generates list of (t, hr) from gpx. Skips missing measuruments. """
-    data = [(get_time(p), get_hr(p)) for p in get_trkpts(gpx_file)]
+    ns, trkpts = get_trkpts(gpx_file)
+    data = [(get_time(p,ns), get_hr(p,ns)) for p in trkpts]
     start_time = decode_iso_time(data[0][0])
     return [(convert_time(t, start_time), hr) for (t, hr) in data if hr]
 
@@ -64,7 +69,7 @@ def calculate_moving_sums(points, window):
 def main():
     test_period = 60 * 30      # test time
     measured_period = 60 * 20  # measured period in seconds
-    plot_hr = True             # turn off to disable data plotting
+    plot_hr = False            # turn off to disable data plotting
 
     gpx_file = sys.argv[1]
     print("Loading gpx: {}".format(gpx_file))
