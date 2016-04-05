@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import sys
-from xml.dom.minidom import parse
 from operator import itemgetter
 from datetime import datetime
 import xml.etree.cElementTree as ET
 import matplotlib.pyplot as pyplot
 import numpy as np
 import re
+
 
 def get_time(trkpt, namespace):
     time_children = trkpt.find("./{0}time".format(namespace))
@@ -43,14 +43,13 @@ def get_trkpts(gpx_file):
 def get_hr_measurements(gpx_file):
     """ Generates list of (t, hr) from gpx. Skips missing measuruments. """
     ns, trkpts = get_trkpts(gpx_file)
-    data = [(get_time(p,ns), get_hr(p,ns)) for p in trkpts]
+    data = [(get_time(p, ns), get_hr(p, ns)) for p in trkpts]
     start_time = decode_iso_time(data[0][0])
     return [(convert_time(t, start_time), hr) for (t, hr) in data if hr]
 
 
 def interpolate(points):
     time, hr = zip(*points)
-    end_time = time[-1]
     new_time = np.arange(int(time[-1]))
     return list(zip(new_time, np.interp(new_time, time, hr)))
 
