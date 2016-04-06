@@ -59,8 +59,8 @@ def calculate_moving_sums(points, window):
     time, hrs = zip(*points)
     moving_sum = sum(hrs[0:window])
     sums = [(time[0], moving_sum)]
-    for i, t in enumerate(time[1:-1*window]):
-        moving_sum += hrs[i+window]-hrs[i]
+    for i, t in enumerate(time[1:-1 * window]):
+        moving_sum += hrs[i + window] - hrs[i]
         sums.append((t, moving_sum))
     return sums
 
