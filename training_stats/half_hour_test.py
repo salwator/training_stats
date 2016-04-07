@@ -70,7 +70,7 @@ def main():
     measured_period = 60 * 20  # measured period in seconds
     plot_hr = False            # turn off to disable data plotting
 
-    gpx_file = sys.argv[1]
+    gpx_file = sys.argv[1] 
     print("Loading gpx: {}".format(gpx_file))
 
     hrs = interpolate(get_hr_measurements(gpx_file))
@@ -81,7 +81,7 @@ def main():
     start_measure = time_stamp + (test_period - measured_period)
     stop_measure = start_measure + measured_period
     measured_time, measured_hrs = zip(*hrs[start_measure:stop_measure])
-    lactate_thr = round(sum(measured_hrs) / measured_period)
+    lactate_thr = round(sum(measured_hrs) / measured_period) 
 
     print("Your lactate threshold is {} bpm.".format(lactate_thr))
 
@@ -89,6 +89,8 @@ def main():
         t, hr = zip(*hrs)
         pyplot.plot(t, hr, 'b')
         pyplot.plot(measured_time, measured_hrs, 'r')
+        pyplot.xlabel('Time [s]')
+        pyplot.ylabel('Hart rate [bpm]')
         pyplot.show()
 
 
