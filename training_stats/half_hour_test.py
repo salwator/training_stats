@@ -17,29 +17,35 @@ def calculate_moving_sums(points, window):
     return sums
 
 
-def main():
+def calculate_lactate_threshold(hrdata):
+    """ Given list of (time, hr), returns lactate threshold and selected data"""
     test_period = 60 * 30      # test time
     measured_period = 60 * 20  # measured period in seconds
-    plot_hr = False            # turn off to disable data plotting
-
-    gpx_file = sys.argv[1] 
-    print("Loading gpx: {}".format(gpx_file))
-
-    hrs = interpolate(get_hr_measurements(gpx_file))
+    hrs = interpolate(hrdata)
     time_stamp, max_sum = max(calculate_moving_sums(hrs, test_period),
                               key=itemgetter(1))
-
+    
     # your lactate threshold is average of last 20 in 30 minutes of tempo run
     start_measure = time_stamp + (test_period - measured_period)
     stop_measure = start_measure + measured_period
     measured_time, measured_hrs = zip(*hrs[start_measure:stop_measure])
     lactate_thr = round(sum(measured_hrs) / measured_period) 
+    return (lactate_thr, measured_time, measured_hrs)
+
+
+def main():
+    plot_hr = False  # turn off to disable data plotting
+
+    gpx_file = sys.argv[1] 
+    print("Loading gpx: {}".format(gpx_file))
+
+    hrdata = get_hr_measurements(gpx_file)
+    lactate_thr, measured_time, measured_hrs = calculate_lactate_threshold(hrdata)
 
     print("Your lactate threshold is {} bpm.".format(lactate_thr))
-
     if(plot_hr):
         print('Plotting training data')
-        t, hr = zip(*hrs)
+        t, hr = zip(*hrdata)
         pyplot.plot(t, hr, 'b')
         pyplot.plot(measured_time, measured_hrs, 'r')
         pyplot.xlabel('Time [s]')
