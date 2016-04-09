@@ -35,7 +35,7 @@ def calculate_lactate_threshold(hrdata):
 
 
 def threshold_from_file(gpxfilename):
-    return calculate_lactate_threshold(interpolate(get_hr_measurements(gpxfilename)))
+    return calculate_lactate_threshold(get_hr_measurements(gpxfilename))
 
 
 def main():
