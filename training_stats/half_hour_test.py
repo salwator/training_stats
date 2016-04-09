@@ -34,10 +34,6 @@ def calculate_lactate_threshold(hrdata):
     return (lactate_thr, measured_time, measured_hrs)
 
 
-def threshold_from_file(gpxfilename):
-    return calculate_lactate_threshold(get_hr_measurements(gpxfilename))
-
-
 def main():
     plot_hr = False  # turn off to disable data plotting
 
