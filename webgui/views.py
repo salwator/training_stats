@@ -3,6 +3,7 @@ from werkzeug import secure_filename
 from webgui import web_gui
 import os
 
+from training_stats import half_hour_test
 
 @web_gui.route('/')
 def index():
@@ -21,6 +22,10 @@ def upload():
     
     if gpx and is_gpx(gpx.filename):
         filename = secure_filename(gpx.filename)
-        gpx.save(os.path.join(web_gui.config['USER_GPX_FOLDER'], filename))
+        saved_file = os.path.join(web_gui.config['USER_GPX_FOLDER'], filename)
+        gpx.save(saved_file)
+        lactate_thr, _, _ = half_hour_test.threshold_from_file(saved_file)
         return render_template('training.html',
-                               filename=filename)
+                               filename=filename,
+                               lactate=lactate_thr,
+                               other=dir(half_hour_test))

@@ -3,7 +3,7 @@
 import sys
 from operator import itemgetter
 import matplotlib.pyplot as pyplot
-from gpxfile import get_hr_measurements, interpolate
+from .gpxfile import get_hr_measurements, interpolate
 
 
 def calculate_moving_sums(points, window):
@@ -15,6 +15,7 @@ def calculate_moving_sums(points, window):
         moving_sum += hrs[i + window] - hrs[i]
         sums.append((t, moving_sum))
     return sums
+
 
 
 def calculate_lactate_threshold(hrdata):
@@ -31,6 +32,10 @@ def calculate_lactate_threshold(hrdata):
     measured_time, measured_hrs = zip(*hrs[start_measure:stop_measure])
     lactate_thr = round(sum(measured_hrs) / measured_period) 
     return (lactate_thr, measured_time, measured_hrs)
+
+
+def threshold_from_file(gpxfilename):
+    return calculate_lactate_threshold(interpolate(get_hr_measurements(gpxfilename)))
 
 
 def main():
