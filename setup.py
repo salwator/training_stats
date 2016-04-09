@@ -8,7 +8,7 @@ config = {
     'author': 'Jakub Draganek',
     'author_email': 'jakub.draganek@gmail.com',
     'version': '0.1',
-    'install_requires': ['nose', 'numpy', 'matplotlib', 'geopy'],
+    'install_requires': ['flask', 'nose', 'numpy', 'matplotlib', 'geopy'],
     'packages': ['training_stats'],
     'scripts': [],
     'name': 'training_stats'
