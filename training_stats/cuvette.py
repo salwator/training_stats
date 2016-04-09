@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from half_hour_test import get_trkpts, decode_iso_time, get_time, convert_time, interpolate
+from gpxfile import get_trkpts, decode_iso_time, get_time, convert_time, interpolate
 import sys
 from geopy.distance import great_circle
 import matplotlib.pyplot as pyplot
