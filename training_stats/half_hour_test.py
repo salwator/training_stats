@@ -86,6 +86,7 @@ def main():
     print("Your lactate threshold is {} bpm.".format(lactate_thr))
 
     if(plot_hr):
+        print('Plotting training data')
         t, hr = zip(*hrs)
         pyplot.plot(t, hr, 'b')
         pyplot.plot(measured_time, measured_hrs, 'r')
