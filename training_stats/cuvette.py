@@ -25,7 +25,7 @@ def get_coordinates(trkpts):
     return [(trkpt.attrib.get('lat'), trkpt.attrib.get('lon')) for trkpt in trkpts]
 
 
-def get_distans(gpx_file):
+def get_distance(gpx_file):
     dists = get_distans_intervals(gpx_file)
     return [sum(dists[0:i]) for i in range(1, len(dists))]
 
@@ -45,17 +45,17 @@ def get_elevation_in_time_measurements(gpx_file):
 
 def get_elevation_in_distans_measurements(gpx_file):
     ns, trkpts = get_trkpts(gpx_file)
-    distans = get_distans(gpx_file)
-    return [(distans[p]*1000, get_elevation(trkpts[p], ns)) for p in range(0, len(trkpts)-2)]
+    distance = get_distance(gpx_file)
+    return [(distance[p]*1000, get_elevation(trkpts[p], ns)) for p in range(0, len(trkpts)-2)]
 
 
 def get_pace_measurements(gpx_file):
     ns, trkpts = get_trkpts(gpx_file)
-    distans = get_distans(gpx_file)
+    distance = get_distance(gpx_file)
     distans_intervals = get_distans_intervals(gpx_file)
     time = [get_time(p, ns) for p in trkpts]
     time_intervals = get_time_intervals(gpx_file)
-    pace = [(convert_time(time[p], decode_iso_time(time[0])), ((time_intervals[p]/60) / distans_intervals[p])) for p in range(len(distans)) if distans_intervals[p] != 0]  # pace in min/km
+    pace = [(convert_time(time[p], decode_iso_time(time[0])), ((time_intervals[p]/60) / distans_intervals[p])) for p in range(len(distance)) if distans_intervals[p] != 0]  # pace in min/km
     return pace
 
 
