@@ -1,7 +1,9 @@
-import xml.etree.cElementTree as ET
 import re
+import xml.etree.cElementTree as ET
 from datetime import datetime
+
 import numpy as np
+
 
 def get_time(trkpt, namespace):
     time_children = trkpt.find("./{0}time".format(namespace))
@@ -44,5 +46,5 @@ def get_hr_measurements(gpx_file):
 
 def interpolate(points):
     time, values = zip(*points)
-    new_time = np.arange(int(time[-1]))
+    new_time = np.arange(int(time[0]), int(time[-1]) + 1)
     return list(zip(new_time, np.interp(new_time, time, values)))
