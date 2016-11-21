@@ -13,14 +13,15 @@ def get_time(trkpt, namespace):
 
 def get_hr(trkpt, namespace):
     extension_children = trkpt.find('./{0}extensions/./'.format(namespace))
-    ext_ns = re.match('\{.*\}', extension_children.tag).group(0)
-    hr_child = extension_children.find('./{0}hr'.format(ext_ns))
-    if hr_child is not None:
-        return int(hr_child.text)
+    if extension_children is not None:
+        ext_ns = re.match('\{.*\}', extension_children.tag).group(0)
+        hr_child = extension_children.find('./{0}hr'.format(ext_ns))
+        if hr_child is not None:
+            return int(hr_child.text)
 
 
 def decode_iso_time(timestr):
-    return datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%SZ')
+    return datetime.strptime(timestr, "%Y-%m-%dT%H:%M:%SZ")
 
 
 def convert_time(time, start):
