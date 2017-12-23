@@ -1,4 +1,4 @@
-from training_stats.gpxfile import interpolate
+from ..training_stats.gpxfile import interpolate
 
 
 def test_interpolate():

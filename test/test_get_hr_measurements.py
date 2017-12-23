@@ -1,4 +1,4 @@
-from training_stats.gpxfile import get_hr_measurements
+from ..training_stats.gpxfile import get_hr_measurements
 
 
 def test_get_hr_measurements():
