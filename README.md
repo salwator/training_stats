@@ -1,4 +1,4 @@
-# Training Statistics [![Build Status](https://travis-ci.org/salwator/training_stats.svg?branch=master)](https://travis-ci.org/salwator/training_stats)
+# Training Statistics [![Build Status](https://travis-ci.org/salwator/training_stats.svg?branch=master)](https://travis-ci.org/salwator/training_stats) [![Maintainability](https://api.codeclimate.com/v1/badges/0f1bf97059152dabb9c8/maintainability)](https://codeclimate.com/github/salwator/training_stats/maintainability)
 My aim in this project is to develop set of useful scripts for analyzing data collected by modern running/cycling watches.
 
 ## Installation
