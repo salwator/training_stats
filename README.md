@@ -5,9 +5,8 @@ My aim in this project is to develop set of useful scripts for analyzing data co
 ## Installation
 
 You will need Python in version 3.4 or newer.
-Run `make` to install dependencies in local virtualenv.
 
-If you want to install dependencies system-wide you can use `sudo pip install -r requirements.txt`.
+Run `pip install training_stats` to install package.
 
 ## Available tools
 
