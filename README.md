@@ -4,9 +4,26 @@ My aim in this project is to develop set of useful scripts for analyzing data co
 
 ## Installation
 
-You will need Python in version 3.4 or newer.
-
+To use _training_stats_ library in your project you will need Python in version 3.4 or newer.
 Run `pip install training_stats` to install package.
+
+
+## Examples
+
+To run examples clone repository.
+
+```bash
+# git clone https://github.com/salwator/training_stats.git
+# cd training_stats
+```
+
+In `examples` directory you can find some playground using library. To use those scripts you will need requirements installed. You might want to use virtualenv to not polute your system environment.
+
+```bash
+# pip install -r requirements.txt
+```
+
+Then `# cd examples` and play :smile:
 
 ## Available tools
 

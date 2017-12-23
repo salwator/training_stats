@@ -12,7 +12,7 @@ config = {
     'author_email': 'jakub.draganek@gmail.com',
     'url': 'https://github.com/salwator/training_stats',
     'python_requires': '>=3.4',
-    'install_requires': ['numpy', 'geopy'],
+    'install_requires': ['numpy'],
     'scripts': [],
 }
 
