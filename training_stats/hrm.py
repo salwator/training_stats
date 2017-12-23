@@ -1,4 +1,5 @@
-from .gpxfile import get_hr_measurements, interpolate
+from .gpxfile import get_hr_measurements
+from .utils import interpolate
 from operator import itemgetter
 
 
@@ -11,7 +12,6 @@ def __calculate_moving_sums(points, window):
         moving_sum += hrs[i + window] - hrs[i]
         sums.append((t, moving_sum))
     return sums
-
 
 
 def calculate_lactate_threshold(hrdata):
