@@ -19,6 +19,7 @@ To run examples clone repository.
 In `examples` directory you can find some playground using library. To use those scripts you will need requirements installed. You might want to use virtualenv to not polute your system environment.
 
 ```bash
+# python setup.py develop
 # pip install -r requirements.txt
 ```
 
@@ -27,6 +28,6 @@ Then `# cd examples` and play :smile:
 ## Available tools
 
 Since project is in early phase only one script is in useful state.
-With [half hour test](training_stats/half_hour_test.py) script you can calculate result of 30 minute endurance test.
+With [half hour test](examples/half_hour_test.py) script you can calculate result of 30 minute endurance test.
 Result is lactate threshold, which is great for determining your heart rate zones. You can calculate your zones [here](http://www.datacranker.com/heart-rate-zones/).
 
