@@ -1,7 +1,7 @@
 import sys
 import matplotlib.pyplot as pyplot
-from ..training_stats.gpsfile import get_hr_measurements
-from ..training_stats.hrm import calculate_lactate_threshold
+from training_stats.gpxfile import get_hr_measurements
+from training_stats.hrm import calculate_lactate_threshold
 
 
 def main():

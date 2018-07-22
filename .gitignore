@@ -1,6 +1,7 @@
 .*
 !.travis.yml
 *.egg-info
+*.pyc
 build
 dist
 */__pycache__*
