@@ -4,15 +4,32 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-attrs==17.3.0             # via pytest
-cycler==0.10.0            # via matplotlib
+attrs==17.3.0
+    # via pytest
+cycler==0.10.0
+    # via matplotlib
 geopy==1.10.0
+    # via -r requirements.in
 matplotlib==1.5.1
+    # via -r requirements.in
 numpy==1.11.0
-pluggy==0.6.0             # via pytest
-py==1.5.2                 # via pytest
-pyparsing==2.2.0          # via matplotlib
+    # via
+    #   -r requirements.in
+    #   matplotlib
+pluggy==0.6.0
+    # via pytest
+py==1.10.0
+    # via pytest
+pyparsing==2.2.0
+    # via matplotlib
 pytest==3.3.1
-python-dateutil==2.6.1    # via matplotlib
-pytz==2017.3              # via matplotlib
-six==1.11.0               # via cycler, pytest, python-dateutil
+    # via -r requirements.in
+python-dateutil==2.6.1
+    # via matplotlib
+pytz==2017.3
+    # via matplotlib
+six==1.11.0
+    # via
+    #   cycler
+    #   pytest
+    #   python-dateutil
